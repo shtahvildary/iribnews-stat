@@ -5,7 +5,7 @@ const botgram = require("botgram");
 //admin it
 //var bot = botgram("456299862:AAGB1q_AMolsLpeE5EARolW4FHEi5-1kqjE");
 // newsNovinBot
-var bot = botgram("545443179:AAGEKFAT_mg5H2aTZbCKEPXr2Pkee11b814");
+var bot = botgram("545443179:AAGEKFAT_mg5H2aTZbCKEPXr2Pkee11b8l4");
 
 require("./bot/commands/index")(bot);
 require("./bot/callbacks/index")(bot);
