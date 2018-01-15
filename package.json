@@ -1,0 +1,17 @@
+{
+  "name": "telegram-stats",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sh.Tahvildary",
+  "license": "ISC",
+  "dependencies": {
+    "botgram": "^2.0.1",
+    "dotenv": "^4.0.0",
+    "mongoose": "^4.13.1",
+    "request": "^2.83.0"
+  }
+}
