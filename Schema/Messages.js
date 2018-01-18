@@ -1,10 +1,10 @@
 const mongoose=require("mongoose");
 
 var messageSchema=mongoose.Schema({
+    type:String,    
     chatId:String,
     chatTiltle:String,
     voteItemId:String, //channel or program ID
-    type:String,    
     chatType:String,
     message:String,
     date:{type:Date,default:Date.now},
@@ -12,6 +12,7 @@ var messageSchema=mongoose.Schema({
     replys:[{text:String,userId:{type: mongoose.SchemaTypes.ObjectId, ref:'User'},date:{type:Date,default:Date.now}}],
     //video,Audio,voice,photo,document,sticker,videoNote
     fileId:String,
+    filePath:String,    
     mime:String,
     //video,photo
     caption:String,
@@ -26,10 +27,6 @@ var messageSchema=mongoose.Schema({
 
     //emoji
     emoji:String
-
-    
-
-
 })
 
 
