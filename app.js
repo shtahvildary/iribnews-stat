@@ -77,7 +77,7 @@ bot.video(function (msg, reply, next) {
 })
 
 bot.audio(function (msg, reply, next) {
-  if(msg.caption){
+  if(msg.title){
   var AnalyseResult = textAnalyser(msg.title);
   }
   var newAudio = new messageDB({
@@ -91,7 +91,7 @@ bot.audio(function (msg, reply, next) {
     fileId: msg.file.id,
     filePath:msg.file.path,
     mime: msg.file.mime,
-    AudioTitle: msg.title,
+    audioTitle: msg.title,
 
   });
   newAudio.save(function (err, savedMessage) {
