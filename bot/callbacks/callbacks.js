@@ -237,4 +237,4 @@ module.exports = function (mainBot) {
 
     })
 }
-module.exports=callSurvey;
+// module.exports=callSurvey;
