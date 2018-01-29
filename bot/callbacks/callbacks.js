@@ -6,9 +6,11 @@ var channelId;
 var reqHandler = require("../../tools/reqHandler");
 var votesDB = require("../../Schema/votes");
 var voteItemsDB = require("../../Schema/voteItems");
+var surveysDB = require("../../Schema/surveys");
 
 
-//types:      0:mainMenueKeys   ,   1:voteItemKeys   ,   2:scoreKeys
+
+//types:      0:mainMenueKeys   ,   1:voteItemKeys   ,   2:scoreKeys    ,   3:surveyKeys
 
 ///////////////////////////////////////////////////////
 //TODO: these variables could be filled automaticly:
@@ -68,9 +70,9 @@ module.exports = function (mainBot) {
         } else {
             // var voteItemTitle;
             keyboards.fillScoreKeys(scoreCount, data.voteItemId, function (generatedKeys) {
-                
+
                 ///////////////////////////////////////////
-                
+
                 voteItemsDB.findById(data.voteItemId).exec(function (err, result) {
 
                     if (err) throw err;
@@ -78,11 +80,11 @@ module.exports = function (mainBot) {
                     voteItemTitle = result._doc.title;
                     // data.voteItemId=result._doc.title;
                     reqHandler("sendMessage", {
-                        
+
                         text: "به " + voteItemTitle + " از ۱ تا ۵ چه امتیازی می دهید؟",
                         // text: "به " + data.voteItemId + " از ۱ تا ۵ چه امتیازی می دهید؟",
                         chat_id: query.from.id,
-    
+
                         reply_markup: {
                             inline_keyboard: generatedKeys
                         }
@@ -180,4 +182,59 @@ module.exports = function (mainBot) {
             });
         }
     });
+
+    //callback for surveyKeys
+    var callSurvey=bot.callback(function (query, next) {
+        var data;
+        try {
+            data = JSON.parse(query.data);
+        } catch (e) {
+            return next();
+        }
+        if (data.type !== 3)
+            return next();
+        else {
+            var survey = findById(data._id).exec(function () {
+                reqHandler("sendMessage", {
+
+                    text: data.text,
+                    chat_id: data.chatId, ////////// chatId is array?????
+
+                    reply_markup: {
+                        inline_keyboard: keyboards.surveyKeys
+                    }
+                }, function (body) {})
+
+                var surveyResult = new votesDB({
+                    chatId: query.from.id,
+                    surveyResult: {
+                        surveyId: data._id, //surveyId
+                        text: data.score
+                    }
+                })
+                surveyResult.save(function (err, savedSurveyResult) {
+                    console.log(err)
+
+                    if (err)
+                        reqHandler("sendMessage", {
+                            text: 'نظر شما ثبت نشد. لطفا دوباره سعی کنید.',
+                            chat_id: query.from.id,
+                            reply_markup: {
+                                inline_keyboard: keyboards.surveyKeys
+                            }
+                        }, function (body) {});
+                    else {
+
+                        reqHandler("sendMessage", {
+                            text: 'نظر شما با موفقیت ثبت شد.',
+                            chat_id: query.from.id,
+                        }, function (body) {});
+
+                    }
+                })
+            })
+        }
+
+    })
 }
+module.exports=callSurvey;

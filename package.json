@@ -11,6 +11,7 @@
   "dependencies": {
     "botgram": "^2.0.1",
     "dotenv": "^4.0.0",
+    "lodash": "^4.17.4",
     "mongoose": "^4.13.1",
     "request": "^2.83.0"
   }

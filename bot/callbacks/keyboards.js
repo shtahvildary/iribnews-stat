@@ -1,7 +1,8 @@
 var voteItemsDB = require("../../Schema/voteItems");
+var surveysDB = require("../../Schema/surveys");
 
 var keyboards = {}
-//types:      0:mainMenueKeys   ,   1:voteItemKeys   ,   2:scoreKeys
+//types:      0:mainMenueKeys   ,   1:voteItemKeys   ,   2:scoreKeys    , 3:surveyKeys
 keyboards.mainMenueKeys = [
     [{
             text: "ثبت نظر درمورد کانال",
@@ -75,6 +76,28 @@ keyboards.fillScoreKeys = function (scoreCount, voteItemId, callback) {
     }
     callback(scoreKeys);
     console.log(scoreKeys);
+}
+keyboards.fillSurveyKeys=function(surveyId,callback){
+    surveyDB.findById(surveyId,{keyboard:1}).exec(function (err, result) {
+        var surveyKeys = []
+        if (err) throw err;
+        keyboard=result.keyboard;
+        
+
+        surveyKeys=keyboard.map(function (item) {
+            // var {type}=result;//=> var type=result.type
+
+            return {
+                text: item,
+                callback_data: JSON.stringify({
+                    type:3,
+                    action:'survey',
+                })
+            };
+        })
+        callback(surveyKeys)
+    });
+
 }
 
 module.exports = keyboards;
