@@ -22,7 +22,9 @@ keyboards.mainMenueKeys = [
 ];
 
 keyboards.fillProgramVoteItems = function (callback) {
-    voteItemsDB.find({'type':1}).exec(function (err, result) {
+    voteItemsDB.find({
+        'type': 1
+    }).exec(function (err, result) {
         var voteItemKeys = []
         if (err) throw err;
 
@@ -30,7 +32,7 @@ keyboards.fillProgramVoteItems = function (callback) {
             voteItemKeys.push([{
                 text: item.title,
                 callback_data: JSON.stringify({
-                    type: 1,    //voteItemKeys
+                    type: 1, //voteItemKeys
                     //voteItemId: 1,
                     voteItemId: item._id,
                     //voteItemName: item.title
@@ -41,7 +43,9 @@ keyboards.fillProgramVoteItems = function (callback) {
     });
 }
 keyboards.fillChannelVoteItems = function (callback) {
-    voteItemsDB.find({'type':0}).exec(function (err, result) {
+    voteItemsDB.find({
+        'type': 0
+    }).exec(function (err, result) {
         var voteItemKeys = []
         if (err) throw err;
 
@@ -49,7 +53,7 @@ keyboards.fillChannelVoteItems = function (callback) {
             voteItemKeys.push([{
                 text: item.title,
                 callback_data: JSON.stringify({
-                    type: 1,    //voteItemKeys
+                    type: 1, //voteItemKeys
                     //voteItemId: 1,
                     voteItemId: item._id,
                     //voteItemName: item.title
@@ -63,40 +67,38 @@ keyboards.fillScoreKeys = function (scoreCount, voteItemId, callback) {
     var scoreKeys = [];
     for (var i = 1; i < scoreCount + 1; i++) {
         scoreKeys.push(
-                [{
-                    text: i,
-                    callback_data: JSON.stringify({
-                        type: 2,    //scoreKeys
-                        score: i,
-                        voteItemId: voteItemId
-                    })
-                }]
-            
+            [{
+                text: i,
+                callback_data: JSON.stringify({
+                    type: 2, //scoreKeys
+                    score: i,
+                    voteItemId: voteItemId
+                })
+            }]
+
         );
     }
     callback(scoreKeys);
     console.log(scoreKeys);
 }
-keyboards.fillSurveyKeys=function(surveyId,callback){
-    surveyDB.findById(surveyId,{keyboard:1}).exec(function (err, result) {
-        var surveyKeys = []
-        if (err) throw err;
-        keyboard=result.keyboard;
-        
+keyboards.fillSurveyKeys = function (survey, callback) {
+    var surveyKeys = []
+    var surveyKeyboard=survey.keyboard;
+    surveyKeys = surveyKeyboard.map(function (item) {
+        console.log(surveyKeyboard.indexOf(item))
+        // var {type}=result;//=> var type=result.type
 
-        surveyKeys=keyboard.map(function (item) {
-            // var {type}=result;//=> var type=result.type
-
-            return {
-                text: item,
-                callback_data: JSON.stringify({
-                    type:3,
-                    action:'survey',
-                })
-            };
-        })
-        callback(surveyKeys)
+        return {
+            text: item,
+            callback_data: JSON.stringify({
+                type: 3,
+               // action: 'survey',
+                keyIndex:surveyKeyboard.indexOf(item),
+                surveyId:survey._id,
+            })
+        };
     });
+    callback(surveyKeys)
 
 }
 

@@ -4,7 +4,8 @@ var bodyParser=require('body-parser');
 var surveys=require('./surveys');
 
 app.use(bodyParser.json());
-app.use('/survey',surveys);
+app.use('/surveys',surveys);
 app.listen(9002,function(err){
     if(err) return console.log('error: ',err);
+    else console.log("server is listening to port 9002")
 })

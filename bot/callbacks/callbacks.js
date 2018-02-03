@@ -7,6 +7,7 @@ var reqHandler = require("../../tools/reqHandler");
 var votesDB = require("../../Schema/votes");
 var voteItemsDB = require("../../Schema/voteItems");
 var surveysDB = require("../../Schema/surveys");
+var surveyResultsDB = require("../../Schema/surveyResults");
 
 
 
@@ -184,7 +185,8 @@ module.exports = function (mainBot) {
     });
 
     //callback for surveyKeys
-    var callSurvey=bot.callback(function (query, next) {
+    bot.callback(function (query, next) {
+
         var data;
         try {
             data = JSON.parse(query.data);
@@ -194,44 +196,43 @@ module.exports = function (mainBot) {
         if (data.type !== 3)
             return next();
         else {
-            var survey = findById(data._id).exec(function () {
-                reqHandler("sendMessage", {
+            var keyIndex = data.keyIndex;
+            surveysDB.findById(data.surveyId).exec(function (error, keyboard) {
+                if (error) throw error;
 
-                    text: data.text,
-                    chat_id: data.chatId, ////////// chatId is array?????
+                else {
+                    var keyText = keyboard._doc.keyboard[keyIndex]
+                    console.log(keyText)
 
-                    reply_markup: {
-                        inline_keyboard: keyboards.surveyKeys
-                    }
-                }, function (body) {})
+                    var surveyResult = new surveyResultsDB({
+                        chatId: query.from.id,
+                        
+                            surveyId: data.surveyId, //surveyId
+                            text: keyText
+                        
+                    })
+                    surveyResult.save(function (err, savedSurveyResult) {
+                        console.log(err)
 
-                var surveyResult = new votesDB({
-                    chatId: query.from.id,
-                    surveyResult: {
-                        surveyId: data._id, //surveyId
-                        text: data.score
-                    }
-                })
-                surveyResult.save(function (err, savedSurveyResult) {
-                    console.log(err)
+                        if (err)
+                            reqHandler("sendMessage", {
+                                text: 'نظر شما ثبت نشد. لطفا دوباره سعی کنید.',
+                                chat_id: query.from.id,
+                                reply_markup: {
+                                    inline_keyboard: keyboards.surveyKeys
+                                }
+                            }, function (body) {});
+                        else {
 
-                    if (err)
-                        reqHandler("sendMessage", {
-                            text: 'نظر شما ثبت نشد. لطفا دوباره سعی کنید.',
-                            chat_id: query.from.id,
-                            reply_markup: {
-                                inline_keyboard: keyboards.surveyKeys
-                            }
-                        }, function (body) {});
-                    else {
+                            reqHandler("sendMessage", {
+                                text: 'نظر شما با موفقیت ثبت شد.',
+                                chat_id: query.from.id,
+                            }, function (body) {});
 
-                        reqHandler("sendMessage", {
-                            text: 'نظر شما با موفقیت ثبت شد.',
-                            chat_id: query.from.id,
-                        }, function (body) {});
+                        }
+                    })
 
-                    }
-                })
+                }
             })
         }
 
