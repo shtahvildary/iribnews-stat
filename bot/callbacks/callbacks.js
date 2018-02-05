@@ -9,6 +9,7 @@ var voteItemsDB = require("../../Schema/voteItems");
 var surveysDB = require("../../Schema/surveys");
 var surveyResultsDB = require("../../Schema/surveyResults");
 var surveyResults = require("../../tools/surveyResults");
+var votingResults = require("../../tools/votingResults");
 
 
 
@@ -140,6 +141,12 @@ module.exports = function (mainBot) {
                         text: 'نظر شما با موفقیت ثبت شد.',
                         chat_id: query.from.id,
                     }, function (body) {});
+                    votingResults(data.voteItemId,function(votingRes){
+                        reqHandler("sendMessage",{
+                            text:'مجموع امتیازات ثبت شده تا کنون برابر است با:\n'+votingRes.percent+'%\nاز همراهی شما متشکریم.',
+                            chat_id: query.from.id,
+                        }, function (body) {});
+                   })
                 }
             });
         }
@@ -179,6 +186,13 @@ module.exports = function (mainBot) {
                         text: 'نظر شما با موفقیت ثبت شد.',
                         chat_id: query.from.id,
                     }, function (body) {});
+                    votingResults(data.voteItemId,function(votingRes){
+                        reqHandler("sendMessage",{
+                            text:'مجموع امتیازات ثبت شده تا کنون برابر است با:\n'+votingRes.percent+'%\nاز همراهی شما متشکریم.',
+                            chat_id: query.from.id,
+                        }, function (body) {});
+                   })                   
+                   
 
                 }
             });
@@ -238,11 +252,11 @@ module.exports = function (mainBot) {
                             surveyResults({'surveyId':data.surveyId,'keyboard':keyboards.surveyKeys},function(survRes){
                                 var results='';
                                 for(var i=0;i<survRes.votes.length;i++){                    
-                                    results+=survRes.votes[i].title+':'+survRes.votes[i].percent+'%\n';
+                                    results+='"'+survRes.votes[i].title+'":'+survRes.votes[i].percent+'%\n';
                                 }
                                 
                                 reqHandler("sendMessage",{
-                                    text:'نتایج این نظر سنجی:\n'+results,
+                                    text:'نتایج این نظر سنجی:\n'+results+'\nاز همراهی شما متشکریم.',
                                     chat_id: query.from.id,
                                 }, function (body) {});
 

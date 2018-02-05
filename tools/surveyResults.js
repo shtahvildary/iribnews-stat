@@ -4,7 +4,7 @@ var _ =require("lodash")
 
 var surveyResults=function (req,callback){
     var surveyId=req.surveyId;
-    var surveyKeyboard=req.keyboard;
+    
 
 // surveyResults_sc.find({'surveyId':surveyId}).populate({path:'surveyId',select:'keyboard'}).exec(function(error,result){
 var keys=surveys_sc.findById(surveyId,{_id:0,keyboard:1}).exec(function(err,res){
