@@ -202,7 +202,8 @@ module.exports = function (mainBot) {
                 if (error) throw error;
 
                 else {
-                    var keyText = keyboard._doc.keyboard[keyIndex]
+                    if(!keyboard)return
+                    var keyText = keyboard.keyboard[keyIndex]
                     console.log(keyText)
 
                     var surveyResult = new surveyResultsDB({
@@ -232,8 +233,12 @@ module.exports = function (mainBot) {
                             console.log('data.surveyId: ',data.surveyId)
                             console.log('keyboards.surveyKeys: ',keyboards.surveyKeys)
 
-                           var survRes= surveyResults({'surveyId':data.surveyId,'keyboard':keyboards.surveyKeys})
-                            console.log(survRes)
+                            //We shpuld return our result in a callback because we are doing some database stuff in `surveyResults`, we cant write something like this:
+                            //survRes=surveyResults(...) [WRONG]
+                            surveyResults({'surveyId':data.surveyId,'keyboard':keyboards.surveyKeys},function(survRes){
+
+                               console.log("*******SURVRES*******",survRes)
+                           })
 
                         }
                     })
