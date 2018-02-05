@@ -8,6 +8,7 @@ var votesDB = require("../../Schema/votes");
 var voteItemsDB = require("../../Schema/voteItems");
 var surveysDB = require("../../Schema/surveys");
 var surveyResultsDB = require("../../Schema/surveyResults");
+var surveyResults = require("../../tools/surveyResults");
 
 
 
@@ -228,6 +229,11 @@ module.exports = function (mainBot) {
                                 text: 'نظر شما با موفقیت ثبت شد.',
                                 chat_id: query.from.id,
                             }, function (body) {});
+                            console.log('data.surveyId: ',data.surveyId)
+                            console.log('keyboards.surveyKeys: ',keyboards.surveyKeys)
+
+                           var survRes= surveyResults({'surveyId':data.surveyId,'keyboard':keyboards.surveyKeys})
+                            console.log(survRes)
 
                         }
                     })
