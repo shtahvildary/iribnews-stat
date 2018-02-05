@@ -236,8 +236,17 @@ module.exports = function (mainBot) {
                             //We shpuld return our result in a callback because we are doing some database stuff in `surveyResults`, we cant write something like this:
                             //survRes=surveyResults(...) [WRONG]
                             surveyResults({'surveyId':data.surveyId,'keyboard':keyboards.surveyKeys},function(survRes){
+                                var results='';
+                                for(var i=0;i<survRes.votes.length;i++){                    
+                                    results+=survRes.votes[i].title+':'+survRes.votes[i].percent+'%\n';
+                                }
+                                
+                                reqHandler("sendMessage",{
+                                    text:'نتایج این نظر سنجی:\n'+results,
+                                    chat_id: query.from.id,
+                                }, function (body) {});
 
-                               console.log("*******SURVRES*******",survRes)
+                            //    console.log("*******SURVRES*******",survRes)
                            })
 
                         }

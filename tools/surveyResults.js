@@ -45,6 +45,7 @@ surveyResults_sc.find({'surveyId':surveyId},{_id:0,text:1}).exec(function(error,
              * "not bad":2
              * }
              */
+
             console.log(count)
             //we have to make it beauty to make our result more readable.
             var votes=[];
@@ -55,8 +56,9 @@ surveyResults_sc.find({'surveyId':surveyId},{_id:0,text:1}).exec(function(error,
              */
             _.mapKeys(count,(value,key)=>{
               //I'm just make a more readable result here, votes is an array of jsons with title key and count key.
-                votes.push({title:key,count:value});
+                votes.push({title:key,count:value,percent:Math.round(value*100/totalCount)});
             });
+
             //We have to return the result with callback function(it's not our robot's callback stuff... it's the callback that will be called when a function has been done it's process.)
             callback({votes,totalCount})
             // keys=result.map(item=>result._doc.text)
