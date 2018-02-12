@@ -14,7 +14,7 @@ require('./apis/index')
 
 
 require('dotenv').config();
-var messageDB = require("./Schema/Messages");
+// var messageDB = require("./Schema/Messages");
 var chatDB = require("./Schema/chats");
 var voteItemsDB = require("./Schema/voteItems");
 var votesDB = require("./Schema/votes");

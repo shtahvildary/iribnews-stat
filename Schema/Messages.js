@@ -35,7 +35,8 @@ var messageSchema = mongoose.Schema({
         date: {
             type: Date,
             default: Date.now
-        }
+        },
+        message_id:String,
     }],
     //video,Audio,voice,photo,document,sticker,videoNote
     fileId: String,
