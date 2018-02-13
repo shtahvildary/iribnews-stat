@@ -6,6 +6,8 @@ var messageSchema = mongoose.Schema({
     voteItemId: String, //channel or program ID
     type: String,
     chatType: String,
+    message_id:String, 
+    replyTo:String,       
     message: String,
     date: {
         type: Date,

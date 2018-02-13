@@ -32,6 +32,8 @@ bot.text(function (msg, reply, next) {
 
   var newMessage = new messageDB({
     type: msg.type,
+    message_id:msg.id,
+    replyTo:msg.reply.id,
     chatId: msg.chat.id,
     chatTitle: msg.chat.title,
     // voteItemId:String, //channel or program ID
@@ -56,7 +58,7 @@ bot.text(function (msg, reply, next) {
   }, function (error, info) {
     if (!error) {
       newMessage.save(function (err, savedMessage) {
-        console.log(err)
+        console.log('err: ',err)
         if (newMessage.chatType == "user") {
           if (err) return reply.text('پیام شما ثبت نشد. لطفا دوباره سعی کنید.');
           else {
@@ -74,6 +76,8 @@ bot.video(function (msg, reply, next) {
   }
   var newVideo = new messageDB({
     type: msg.type,
+    message_id:msg.id,
+    replyTo:msg.reply.id,
     chatId: msg.chat.id,
     chatTitle: msg.chat.title,
     chatType: msg.chat.type,
@@ -119,6 +123,8 @@ bot.audio(function (msg, reply, next) {
   }
   var newAudio = new messageDB({
     type: msg.type,
+    message_id:msg.id,
+    replyTo:msg.reply.id,
     chatId: msg.chat.id,
     chatTitle: msg.chat.title,
     // voteItemId:String, //channel or program ID
@@ -168,6 +174,8 @@ bot.voice(function (msg, reply, next) {
   }
   var newVoice = new messageDB({
     type: msg.type,
+    message_id:msg.id,
+    replyTo:msg.reply.id,
     chatId: msg.chat.id,
     chatTitle: msg.chat.title,
     // voteItemId:String, //channel or program ID
@@ -220,6 +228,8 @@ bot.photo(function (msg, reply, next) {
   }
   var newPhoto = new messageDB({
     type: msg.type,
+    message_id:msg.id,
+    replyTo:msg.reply.id,
     chatId: msg.chat.id,
     chatTitle: msg.chat.title,
     chatType: msg.chat.type,
@@ -268,6 +278,8 @@ bot.document(function (msg, reply, next) {
 
   var newDocument = new messageDB({
     type: msg.type,
+    message_id:msg.id,
+    replyTo:msg.reply.id,
     chatId: msg.chat.id,
     chatTitle: msg.chat.title,
     // voteItemId:String, //channel or program ID
@@ -315,6 +327,8 @@ bot.sticker(function (msg, reply, next) {
 
   var newSticker = new messageDB({
     type: msg.type,
+    message_id:msg.id,
+    replyTo:msg.reply.id,
     chatId: msg.chat.id,
     chatTitle: msg.chat.title,
     // voteItemId:String, //channel or program ID

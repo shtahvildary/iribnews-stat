@@ -18,6 +18,7 @@ router.post('/reply/new', function (req, res) {
 }
    */
   messages_sc.findById(req.body._id).exec(function (err, result) {
+    console.log(req)
     if (err) 
       return res.status(500).json({
         error: err
@@ -39,6 +40,7 @@ router.post('/reply/new', function (req, res) {
 
       text: req.body.text,
       chat_id: result._doc.chatId,
+      reply_to_message_id:result._doc.message_id
     }, function (response) {
       console.log(response)
       if (!response)
@@ -59,7 +61,7 @@ router.post('/reply/new', function (req, res) {
           result._doc.replys = reply || result._doc.replys;
 
         }
-        result.save().exec(function (err, result) {
+        result.save(function (err, result) {
           if (!err) {
             res.status(200).send(result);
           } else {
@@ -83,6 +85,12 @@ router.post('/reply/new', function (req, res) {
 	"text":"just 4 test!!",
 	"userId":"5a509716513a501c9cce24c6"
 }
+example home:
+{"_id":"5a61ab39b6def3171ee9992d",
+	"text":"dear7",
+	"message_id":"227"
+	
+}
 */
   router.post('/reply/edit', function (req, res) {
     messages_sc.findById(req.body._id).exec(function (err, result) {
@@ -99,7 +107,9 @@ router.post('/reply/new', function (req, res) {
 
         text: req.body.text,
         chat_id: result._doc.chatId,
-        message_id:req.body.message_id
+        message_id:req.body.message_id,
+      reply_to_message_id:result._doc.message_id
+        
       },function(response){
         if (!response)
         return res.status(500).json({
@@ -135,10 +145,10 @@ console.log('result._doc.replys:',result._doc.replys)
         //   result._doc.replys = reply || result._doc.replys;
 
         // }
-        result.save(function (err, result) {
-          console.log('response: ',result)
+        result.save({'replys':result._doc.replys},function (err, savedItem) {
+          console.log('response: ',savedItem)
           if (!err) {
-            res.status(200).send(result);
+            res.status(200).send(savedItem);
           } else {
             res.status(500).send(err)
           }
