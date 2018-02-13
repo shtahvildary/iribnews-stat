@@ -9,12 +9,12 @@ var bot = botgram("545443179:AAGEKFAT_mg5H2aTZbCKEPXr2Pkee11b8l4");
 global.bot=bot;
 require("./bot/commands/index")(bot);
 require("./bot/callbacks/index")(bot);
-require('./apis/index')
+require("./apis/index")
 
 
 
 require('dotenv').config();
-// var messageDB = require("./Schema/Messages");
+var messageDB = require("./Schema/messages");
 var chatDB = require("./Schema/chats");
 var voteItemsDB = require("./Schema/voteItems");
 var votesDB = require("./Schema/votes");

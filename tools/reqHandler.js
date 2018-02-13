@@ -23,6 +23,7 @@ var req=function(method,reqBody,callback){
         }
         else{
           console.log(body)
+          // return body
         }
       });
 
