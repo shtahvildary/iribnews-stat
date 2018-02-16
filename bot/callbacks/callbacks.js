@@ -260,7 +260,7 @@ module.exports = function (mainBot) {
                                     chat_id: query.from.id,
                                 }, function (body) {});
 
-                            //    console.log("*******SURVRES*******",survRes)
+            
                            })
 
                         }
@@ -272,4 +272,3 @@ module.exports = function (mainBot) {
 
     })
 }
-// module.exports=callSurvey;

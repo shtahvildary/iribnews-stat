@@ -15,7 +15,6 @@ var req=function(method,reqBody,callback){
         json: reqBody
       };
    
-      // request('http://google.com')
       request(options, function(err, res, body) {
         if (res && (res.statusCode === 200 || res.statusCode === 201)) {
           console.log(res,body);
