@@ -43,6 +43,7 @@ var messageSchema = mongoose.Schema({
     //video,Audio,voice,photo,document,sticker,videoNote
     fileId: String,
     mime: String,
+    filePath:String,
     //video,photo
     caption: String,
     //Audio

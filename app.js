@@ -29,11 +29,11 @@ bot.text(function (msg, reply, next) {
   var AnalyseResult = textAnalyser(msg.text);
   console.log("analyseResult:", AnalyseResult);
   //var keywords=msg.hashtags().concat(AnalyseResult);
-
+if(msg.reply) var replyTo=msg.reply.id
   var newMessage = new messageDB({
     type: msg.type,
     message_id:msg.id,
-    replyTo:msg.reply.id,
+    replyTo:replyTo,
     chatId: msg.chat.id,
     chatTitle: msg.chat.title,
     // voteItemId:String, //channel or program ID
@@ -62,7 +62,7 @@ bot.text(function (msg, reply, next) {
         if (newMessage.chatType == "user") {
           if (err) return reply.text('پیام شما ثبت نشد. لطفا دوباره سعی کنید.');
           else {
-            reply.text('پیام شما با موفقیت ارسال شد.')
+            reply.text('پیام شما با موفقیت ثبت شد.')
           }
         }
       });
@@ -71,13 +71,14 @@ bot.text(function (msg, reply, next) {
 })
 
 bot.video(function (msg, reply, next) {
-  if (msg.caption) {
+  if (msg.caption) 
     var AnalyseResult = textAnalyser(msg.caption);
-  }
+if(msg.reply) var replyTo=msg.reply.id    
+  
   var newVideo = new messageDB({
     type: msg.type,
     message_id:msg.id,
-    replyTo:msg.reply.id,
+    replyTo:replyTo,
     chatId: msg.chat.id,
     chatTitle: msg.chat.title,
     chatType: msg.chat.type,
@@ -109,7 +110,7 @@ bot.video(function (msg, reply, next) {
         if (newVideo.chatType == "user") {
 
           if (err) return reply.text('پیام شما ثبت نشد. لطفا دوباره سعی کنید.');
-          reply.text('پیام شما با موفقیت ارسال شد.');
+          reply.text('پیام شما با موفقیت ثبت شد.');
         }
       });
     } else return reply.text('پیام شما ثبت نشد. لطفا دوباره سعی کنید.');
@@ -121,13 +122,14 @@ bot.audio(function (msg, reply, next) {
   if (msg.title) {
     var AnalyseResult = textAnalyser(msg.title);
   }
+if(msg.reply) var replyTo=msg.reply.id
+  
   var newAudio = new messageDB({
     type: msg.type,
     message_id:msg.id,
-    replyTo:msg.reply.id,
+    replyTo:replyTo,
     chatId: msg.chat.id,
     chatTitle: msg.chat.title,
-    // voteItemId:String, //channel or program ID
     chatType: msg.chat.type,
     keywords: AnalyseResult,
 
@@ -157,7 +159,7 @@ bot.audio(function (msg, reply, next) {
         if (newAudio.chatType == "user") {
 
           if (err) return reply.text('پیام شما ثبت نشد. لطفا دوباره سعی کنید.');
-          reply.text('پیام شما با موفقیت ارسال شد.');
+          reply.text('پیام شما با موفقیت ثبت شد.');
         }
 
       });
@@ -172,13 +174,14 @@ bot.voice(function (msg, reply, next) {
   if (msg.caption) {
     var AnalyseResult = textAnalyser(msg.title);
   }
+if(msg.reply) var replyTo=msg.reply.id
+  
   var newVoice = new messageDB({
     type: msg.type,
     message_id:msg.id,
-    replyTo:msg.reply.id,
+    replyTo:replyTo,
     chatId: msg.chat.id,
     chatTitle: msg.chat.title,
-    // voteItemId:String, //channel or program ID
     chatType: msg.chat.type,
     keywords: AnalyseResult,
 
@@ -211,7 +214,7 @@ bot.voice(function (msg, reply, next) {
         if (newVoice.chatType == "user") {
 
           if (err) return reply.text('پیام شما ثبت نشد. لطفا دوباره سعی کنید.');
-          reply.text('پیام شما با موفقیت ارسال شد.');
+          reply.text('پیام شما با موفقیت ثبت شد.');
         }
       });
     } else return reply.text('پیام شما ثبت نشد. لطفا دوباره سعی کنید.');
@@ -226,10 +229,11 @@ bot.photo(function (msg, reply, next) {
   if (msg.caption) {
     var AnalyseResult = textAnalyser(msg.caption);
   }
+if(msg.reply) var replyTo=msg.reply.id  
   var newPhoto = new messageDB({
     type: msg.type,
     message_id:msg.id,
-    replyTo:msg.reply.id,
+    replyTo:replyTo,
     chatId: msg.chat.id,
     chatTitle: msg.chat.title,
     chatType: msg.chat.type,
@@ -262,7 +266,7 @@ bot.photo(function (msg, reply, next) {
         if (newPhoto.chatType == "user") {
 
           if (err) return reply.text('پیام شما ثبت نشد. لطفا دوباره سعی کنید.');
-          reply.text('پیام شما با موفقیت ارسال شد.');
+          reply.text('پیام شما با موفقیت ثبت شد.');
         }
       });
     } else return reply.text('پیام شما ثبت نشد. لطفا دوباره سعی کنید.');
@@ -275,11 +279,12 @@ bot.photo(function (msg, reply, next) {
 })
 bot.document(function (msg, reply, next) {
   var AnalyseResult = textAnalyser(msg.filename);
+  if(msg.reply) var replyTo=msg.reply.id
 
   var newDocument = new messageDB({
     type: msg.type,
     message_id:msg.id,
-    replyTo:msg.reply.id,
+    replyTo:replyTo,
     chatId: msg.chat.id,
     chatTitle: msg.chat.title,
     // voteItemId:String, //channel or program ID
@@ -312,7 +317,7 @@ bot.document(function (msg, reply, next) {
         if (newDocument.chatType == "user") {
 
           if (err) return reply.text('پیام شما ثبت نشد. لطفا دوباره سعی کنید.');
-          reply.text('پیام شما با موفقیت ارسال شد.');
+          reply.text('پیام شما با موفقیت ثبت شد.');
         }
       });
     } else return reply.text('پیام شما ثبت نشد. لطفا دوباره سعی کنید.');
@@ -324,11 +329,12 @@ bot.document(function (msg, reply, next) {
 
 bot.sticker(function (msg, reply, next) {
   // var AnalyseResult = textAnalyser(msg.caption);
+  if(msg.reply) var replyTo=msg.reply.id
 
   var newSticker = new messageDB({
     type: msg.type,
     message_id:msg.id,
-    replyTo:msg.reply.id,
+    replyTo:replyTo,
     chatId: msg.chat.id,
     chatTitle: msg.chat.title,
     // voteItemId:String, //channel or program ID
@@ -342,7 +348,7 @@ bot.sticker(function (msg, reply, next) {
   // newSticker.save(function(err,savedMessage){
   //     console.log(err)
   //     if(err) return reply.text('پیام شما ثبت نشد. لطفا دوباره سعی کنید.');
-  //     reply.text('پیام شما با موفقیت ارسال شد.');
+  //     reply.text('پیام شما با موفقیت ثبت شد.');
 
   //   });
 
