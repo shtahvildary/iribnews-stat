@@ -25,16 +25,6 @@ router.post("/reply/new", function(req, res) {
       return res.status(500).json({
         error: "There is no message with _id=" + req.body._id
       });
-
-    console.log("message:", result);
-    console.log("req.body.reply:", req.body);
-    // var reply = {
-    //   text: req.body.text,
-    //   //date:req.body.date,
-    //   // userId: req.body.userId
-    //   // userId: req.body.token
-    //   userId: req.body.userId
-    // }
     reqHandler(
       "sendMessage",
       {
@@ -45,30 +35,24 @@ router.post("/reply/new", function(req, res) {
       function(response) {
         console.log(response);
         if (!response)
-          res.status(500).json({
+          return res.status(500).json({
             error: "There is a problem in sending message..."
           });
-        else {
-          console.log("response: ", response);
-          var reply = {
-            userId: req.body.userId,
-            text: response.result.text,
-            message_id: response.result.message_id
-          };
-          //save reply to messages schema...
-          if (result._doc.replys) {
-            result._doc.replys.push(reply || result._doc.replys);
-          } else {
-            result._doc.replys = reply || result._doc.replys;
-          }
-          result.save(function(err, result) {
-            if (!err) {
-              res.status(200).send(result);
-            } else {
-              res.status(500).send(err);
-            }
-          });
-        }
+        console.log("response: ", response);
+        var reply = {
+          userId: req.body.userId,
+          text: response.result.text,
+          message_id: response.result.message_id
+        };
+        //save reply to messages schema...
+        if (result._doc.replys)
+          result._doc.replys.push(reply || result._doc.replys);
+        else result._doc.replys = reply || result._doc.replys;
+
+        result.save(function(error, sentMsg) {
+          if (!error) return res.status(200).json({ sentMessage: sentMsg});
+          else return res.status(500).json({ error: error});
+        });
       }
     );
   });
