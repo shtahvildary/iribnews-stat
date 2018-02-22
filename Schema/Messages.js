@@ -7,12 +7,14 @@ var messageSchema = mongoose.Schema({
     type: String,
     chatType: String,
     message_id:String, 
-    replyTo:String,       
+    replyTo:String,          
     message: String,
     date: {
         type: Date,
         default: Date.now
     },
+    departmentId:{ type:mongoose.SchemaTypes.ObjectId, ref:"departments"},
+    
     keywords: [{
         word: String,
         count: Number
@@ -40,10 +42,11 @@ var messageSchema = mongoose.Schema({
         },
         message_id:String,
     }],
-    //video,Audio,voice,photo,document,sticker,videoNote
+    //video,Audio,voice,photo,document,sticker,video_note
     fileId: String,
     mime: String,
-    filePath:String,
+    filePath: String,
+    
     //video,photo
     caption: String,
     //Audio
