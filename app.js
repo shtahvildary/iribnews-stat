@@ -23,6 +23,8 @@ const db = require("./config/DBConfig");
 var reqHandler = require("./tools/reqHandler");
 var uploader = require("./tools/upload");
 var departmentsDB = require("./Schema/departments");
+var contextDB = require("./Schema/contexts");
+
 
 var departmentId;
 
@@ -35,6 +37,28 @@ departmentsDB
   });
 
 bot.text(function(msg, reply, next) {
+  contextDB.findOne({$and:[{chatId:msg.chat.id},{comment:true}]}).exec(function(error,result){
+    if(result){
+      var comment={
+        destinationId:result.destinationId,
+        text:msg.text,
+
+      }
+      var vote=new votesDB({chatId:msg.chat.id,chatTitle:msg.chat.title,comment})
+      vote.save(function(err,res){
+        if(err){
+          reply.text("ثبت پیام با خظا مواجه شد. لطفا دوباره اقدام فرمایید.")
+        }
+        else{
+  contextDB.update({chatId:msg.chat.id},{comment:0,destinationId:null}).exec(function(err,context){
+          if(!err)
+          reply.text("پیام شما با موفقیت ثبت شد. با تشکر") 
+      })
+    }
+  })
+}
+  else{
+  
   var AnalyseResult = textAnalyser(msg.text);
   console.log("analyseResult:", AnalyseResult);
   //var keywords=msg.hashtags().concat(AnalyseResult);
@@ -86,7 +110,10 @@ bot.text(function(msg, reply, next) {
       } else return reply.text("پیام شما ثبت نشد. لطفا دوباره سعی کنید.");
     }
   );
+}
 });
+})
+    
 
 bot.video(function(msg, reply, next) {
   if (msg.caption) var AnalyseResult = textAnalyser(msg.caption);

@@ -7,11 +7,12 @@ var reqHandler = require("../../tools/reqHandler");
 var votesDB = require("../../Schema/votes");
 var voteItemsDB = require("../../Schema/voteItems");
 var surveysDB = require("../../Schema/surveys");
+var contextDB = require("../../Schema/contexts");
 var surveyResultsDB = require("../../Schema/surveyResults");
 var surveyResults = require("../../tools/surveyResults");
 var votingResults = require("../../tools/votingResults");
 
-//types:      0:mainMenueKeys   ,   1:voteItemKeys   ,   2:scoreKeys    ,   3:surveyKeys
+//types:      0:mainMenueKeys   ,   1:voteItemKeys   ,   2:scoreKeys    ,   3:surveyKeys  ,   4:voteOrCommentKeys    
 
 ///////////////////////////////////////////////////////
 //TODO: these variables could be filled automaticly:
@@ -21,6 +22,7 @@ var voteItemTitle;
 
 module.exports = function(mainBot) {
   bot = mainBot;
+  
   //callback for mainMenueKeys
   bot.callback(function(query, next) {
     var data;
@@ -47,7 +49,7 @@ module.exports = function(mainBot) {
       });
     } else if (data.action == "programsVoting") {
       keyboards.fillProgramVoteItems(function(generatedKeys) {
-        console.log(generatedKeys);
+        
         reqHandler(
           "sendMessage",
           {
@@ -62,6 +64,10 @@ module.exports = function(mainBot) {
       });
     }
   });
+
+  
+
+
   //callback for voteItemsKeys - program voting
   bot.callback(function(query, next) {
     var data;
@@ -70,13 +76,14 @@ module.exports = function(mainBot) {
     } catch (e) {
       return next();
     }
-    if (data.type !== 1) {
-      return next();
-    } else {
+    if (data.type !== 1) return next();
+    else {
       // var voteItemTitle;
-      keyboards.fillScoreKeys(scoreCount, data.voteItemId, function(
-        generatedKeys
-      ) {
+      // keyboards.fillScoreKeys(scoreCount, data.voteItemId, function(
+      //   generatedKeys
+      // ) {
+
+        
         ///////////////////////////////////////////
 
         voteItemsDB.findById(data.voteItemId).exec(function(err, result) {
@@ -84,28 +91,92 @@ module.exports = function(mainBot) {
           console.log(result);
           voteItemTitle = result._doc.title;
           // data.voteItemId=result._doc.title;
-          reqHandler(
-            "sendMessage",
-            {
-              text: "به " + voteItemTitle + " از ۱ تا ۵ چه امتیازی می دهید؟",
-              // text: "به " + data.voteItemId + " از ۱ تا ۵ چه امتیازی می دهید؟",
-              chat_id: query.from.id,
+          var thisKeyboard=keyboards.voteOrCommentKeys
+          var callbackData=JSON.parse(thisKeyboard[0][0].callback_data)
+          callbackData.id=data.voteItemId;
+          thisKeyboard[0][0].callback_data=JSON.stringify(callbackData)
+          callbackData=JSON.parse(thisKeyboard[0][1].callback_data)
+          callbackData.id=data.voteItemId;
+          thisKeyboard[0][1].callback_data=JSON.stringify(callbackData)
+          
+          console.log('thisKeyboard:',thisKeyboard)
+          reqHandler("sendMessage",
+          {text:"لطفا انتخاب کنید:",
+            chat_id: query.from.id,
 
-              reply_markup: {
-                inline_keyboard: generatedKeys
-              }
-            },
-            function(body) {}
-          );
+          reply_markup: {
+            inline_keyboard: thisKeyboard}
+          },function(body) {})
+          
         });
         console.log(voteItemTitle);
 
         ///////////////////////////////////////////
 
         //console.log("data: "+data);
-      });
+      // });
     }
   });
+
+
+  bot.callback(function(query, next) {
+    var data;
+    try {
+      data = JSON.parse(query.data);
+    } catch (e) {
+      return next();
+    }
+    if (data.type !== 4) return next();
+    if (data.action == "comment") {
+      contextDB.update({chatId:query.from.id},{chatId:query.from.id,comment:1,destinationId:data.id},{upsert:true}).exec(function(error,result){
+        if(error){
+          reqHandler("sendMessage",
+          {text:"لطفا دوباره انتخاب کنید:",
+            chat_id: query.from.id,
+
+          reply_markup: {
+            inline_keyboard: keyboards.voteOrCommentKeys}
+          },function(body) {})
+        }
+        else{
+        reqHandler(
+          "sendMessage",
+          {
+            text: "از اینکه نظر خود را با ما درمیان می گذارید کمال تشکر را داریم.",
+            chat_id: query.from.id,
+            
+      },
+    function(body){
+    });}
+  });
+    }
+     else if (data.action == "vote") {
+      voteItemsDB.findById(data.id).exec(function(err, result) {
+        if (err) throw err;
+      var voteItemTitle;
+      voteItemTitle = result.title;      
+      keyboards.fillScoreKeys(scoreCount, data.id, function(
+        generatedKeys
+      ) {
+        console.log(generatedKeys);
+        reqHandler(
+          "sendMessage",
+          {
+            text: "به " + voteItemTitle + " از ۱ تا ۵ چه امتیازی می دهید؟",
+            // text: "به " + data.voteItemId + " از ۱ تا ۵ چه امتیازی می دهید؟",
+            chat_id: query.from.id,
+
+            reply_markup: {
+              inline_keyboard: generatedKeys
+            }
+          },
+          function(body) {}
+        );
+      });
+    })
+  }
+  });
+
 
   //callback for scoreKeys
   bot.callback(function(query, next) {
@@ -135,7 +206,7 @@ module.exports = function(mainBot) {
             reqHandler(
               "sendMessage",
               {
-                text: "نظر شما ثبت نشد. لطفا دوباره سعی کنید.",
+                text: "رای شما ثبت نشد. لطفا دوباره سعی کنید.",
                 chat_id: query.from.id,
                 reply_markup: {
                   inline_keyboard: keyboards.scoreKeys
@@ -148,7 +219,7 @@ module.exports = function(mainBot) {
           reqHandler(
             "sendMessage",
             {
-              text: "نظر شما با موفقیت ثبت شد.",
+              text: "رای شما با موفقیت ثبت شد.",
               chat_id: query.from.id
             },
             function(body) {}
@@ -170,6 +241,9 @@ module.exports = function(mainBot) {
       });
     }
   });
+
+
+  
   //callback for voteItemKeys
   bot.callback(function(query, next) {
     var data;
@@ -216,7 +290,7 @@ module.exports = function(mainBot) {
               "sendMessage",
               {
                 text:
-                  "مجموع امتیازات ثبت شده تا کنون برابر است با:\n" +
+                  "مجموع امتیازات ثبت شده تا کنون برابر است با: " +
                   votingRes.percent +
                   "%\nاز همراهی شما متشکریم.",
                 chat_id: query.from.id

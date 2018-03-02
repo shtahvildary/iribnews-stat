@@ -2,7 +2,7 @@ var voteItemsDB = require("../../Schema/voteItems");
 var surveysDB = require("../../Schema/surveys");
 
 var keyboards = {}
-//types:      0:mainMenueKeys   ,   1:voteItemKeys   ,   2:scoreKeys    , 3:surveyKeys
+//types:      0:mainMenueKeys   ,   1:voteItemKeys   ,   2:scoreKeys    , 3:surveyKeys      ,       4:voteOrCommentKeys      
 keyboards.mainMenueKeys = [
     [{
             text: "ثبت نظر درمورد کانال",
@@ -20,6 +20,27 @@ keyboards.mainMenueKeys = [
         }
     ]
 ];
+
+keyboards.voteOrCommentKeys = [
+    [{
+            text: "ثبت نظر",
+            callback_data: JSON.stringify({
+                type: 4, //voteOrSCommentKeys
+                action: "comment",
+                
+            })
+        },
+        {
+            text: "ثبت امتیاز",
+            callback_data: JSON.stringify({
+                type: 4, //voteOrCommentKeys
+                action: "vote"
+            })
+        }
+    ]
+];
+
+
 
 keyboards.fillProgramVoteItems = function (callback) {
     voteItemsDB.find({
