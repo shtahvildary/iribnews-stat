@@ -3,6 +3,8 @@ var router = express.Router();
 var _ = require("lodash");
 var reqHandler = require("../tools/reqHandler");
 var messages_sc = require("../Schema/messages");
+var http=require("http");
+var fs=require("fs")
 
 // var replyMessage = function (req, callback) {
 router.post("/reply/new", function(req, res) {
@@ -15,8 +17,8 @@ router.post("/reply/new", function(req, res) {
 	"userId":"5a509716513a501c9cce24c6"
 }
    */
+  
   messages_sc.findById(req.body._id).exec(function(err, result) {
-    console.log(req);
     if (err)
       return res.status(500).json({
         error: err
@@ -38,21 +40,41 @@ router.post("/reply/new", function(req, res) {
           return res.status(500).json({
             error: "There is a problem in sending message..."
           });
-        console.log("response: ", response);
         var reply = {
           userId: req.body.userId,
           text: response.result.text,
           message_id: response.result.message_id
         };
+      
         //save reply to messages schema...
         if (result._doc.replys)
           result._doc.replys.push(reply || result._doc.replys);
         else result._doc.replys = reply || result._doc.replys;
 
+        var {filePath}=req.body;
+  //create a stream to write file on our storage
+  var file = fs.createWriteStream("tmp" + filePath);
+  //get file
+  var request = http.get("http://localhost:9000"+filePath, function(response) {
+    //store it with created write stream
+    response.pipe(file);
+
+        reqHandler(
+          "sendDocument",
+          {
+            document: fs.createReadStream(file.path),
+            chat_id: result._doc.chatId,
+            reply_to_message_id: result._doc.message_id
+          },
+          function(response) {
+            console.log("tg res file",response)
+          });
         result.save(function(error, sentMsg) {
           if (!error) return res.status(200).json({ sentMessage: sentMsg});
           else return res.status(500).json({ error: error});
         });
+  });
+        
       }
     );
   });

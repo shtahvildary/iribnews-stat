@@ -31,7 +31,9 @@ var messageSchema = mongoose.Schema({
         }
     }],
     replys: [{
-        text: String,
+        text: String,   
+        filePath:String,
+
         userId: {
             type: mongoose.SchemaTypes.ObjectId,
             ref: 'User'

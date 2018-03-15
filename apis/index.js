@@ -20,6 +20,6 @@ app.use('/surveys',surveys);
 app.use('/sendMessage',sendMessage);
 app.listen(9002,function(err){
     // app.listen(port,function(err){
-    if(err) return console.log('error: ',err);
-    else console.log("server is listening to port 9002")
+    if(err) return ('error: ',err);
+    else ("server is listening to port 9002")
 })

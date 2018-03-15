@@ -5,8 +5,8 @@ module.exports = function (text, callback) {
     words=removeStopWords(words);    
     var counts = counter(words);
     return counts;
-    //console.log(words);
-    //console.log(counts);
+    //(words);
+    //(counts);
 
 }
 
@@ -61,12 +61,12 @@ var counter = function (words) {
 var removeStopWords = function (words) {
     var contents = fs.readFileSync("./resources/fa.json");
     var stopWords = JSON.parse(contents);
-    //console.log(stopWords);
+    //(stopWords);
     words.forEach(function (word) {
         if (stopWords.includes(word)) {
             words.splice(words.indexOf(word), 1);
         }
     })
     return words;
-    //console.log(words);
+    //(words);
 }

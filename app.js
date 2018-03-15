@@ -60,7 +60,6 @@ bot.text(function(msg, reply, next) {
   else{
   
   var AnalyseResult = textAnalyser(msg.text);
-  console.log("analyseResult:", AnalyseResult);
   //var keywords=msg.hashtags().concat(AnalyseResult);
   // var departmentId=findDepartment(bot.authToken);
   if (msg.reply) var replyTo = msg.reply.id;
@@ -98,7 +97,6 @@ bot.text(function(msg, reply, next) {
     function(error, info) {
       if (!error) {
         newMessage.save(function(err, savedMessage) {
-          console.log("err: ", err);
           if (newMessage.chatType == "user") {
             if (err)
               return reply.text("پیام شما ثبت نشد. لطفا دوباره سعی کنید.");
@@ -155,7 +153,6 @@ bot.video(function(msg, reply, next) {
     function(error, info) {
       if (!error) {
         newVideo.save(function(err, savedMessage) {
-          console.log(err);
           if (newVideo.chatType == "user") {
             if (err)
               return reply.text("پیام شما ثبت نشد. لطفا دوباره سعی کنید.");
@@ -211,7 +208,6 @@ bot.audio(function(msg, reply, next) {
     function(error, info) {
       if (!error) {
         newAudio.save(function(err, savedMessage) {
-          console.log(err);
           if (newAudio.chatType == "user") {
             if (err)
               return reply.text("پیام شما ثبت نشد. لطفا دوباره سعی کنید.");
@@ -271,7 +267,6 @@ bot.voice(function(msg, reply, next) {
     function(error, info) {
       if (!error) {
         newVoice.save(function(err, savedMessage) {
-          console.log(err);
           if (newVoice.chatType == "user") {
             if (err)
               return reply.text("پیام شما ثبت نشد. لطفا دوباره سعی کنید.");
@@ -332,7 +327,6 @@ bot.photo(function(msg, reply, next) {
     function(error, info) {
       if (!error) {
         newPhoto.save(function(err, savedMessage) {
-          console.log(err);
           if (newPhoto.chatType == "user") {
             if (err)
               return reply.text("پیام شما ثبت نشد. لطفا دوباره سعی کنید.");
@@ -341,7 +335,6 @@ bot.photo(function(msg, reply, next) {
         });
       } else return reply.text("پیام شما ثبت نشد. لطفا دوباره سعی کنید.");
 
-      console.log(msg);
       download(msg.image.file);
     }
   );
@@ -388,7 +381,6 @@ bot.document(function(msg, reply, next) {
     function(error, info) {
       if (!error) {
         newDocument.save(function(err, savedMessage) {
-          console.log(err);
           if (newDocument.chatType == "user") {
             if (err)
               return reply.text("پیام شما ثبت نشد. لطفا دوباره سعی کنید.");
@@ -443,7 +435,6 @@ bot.sticker(function(msg, reply, next) {
     function(error, info) {
       if (!error) {
         newSticker.save(function(err, savedMessage) {
-          console.log(err);
           if (newSticker.chatType == "user") {
             if (err)
               return reply.text("پیام شما ثبت نشد. لطفا دوباره سعی کنید.");
@@ -494,7 +485,6 @@ bot.video_note(function(msg, reply, next) {
     function(error, info) {
       if (!error) {
         newVideoNote.save(function(err, savedMessage) {
-          console.log(err);
           if (newVideoNote.chatType == "user") {
             if (err)
               return reply.text("پیام شما ثبت نشد. لطفا دوباره سعی کنید.");
@@ -514,9 +504,7 @@ function download(msgFile) {
   bot.fileGet(msgFile, function(err, info) {
     if (err) throw err;
     var path = msgFile.path;
-    // console.log('fileType: ', msgFile.type);
     link = bot.fileLink(info);
-    console.log("We got the link:", bot.fileLink(info));
     uploader(link, function(err, body, response) {
       if (!err) {
         var filename = body.filename;

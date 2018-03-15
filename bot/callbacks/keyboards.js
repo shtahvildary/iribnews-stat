@@ -100,13 +100,11 @@ keyboards.fillScoreKeys = function (scoreCount, voteItemId, callback) {
         );
     }
     callback(scoreKeys);
-    console.log(scoreKeys);
 }
 keyboards.fillSurveyKeys = function (survey, callback) {
     var surveyKeys = []
     var surveyKeyboard=survey.keyboard;
     surveyKeys = surveyKeyboard.map(function (item) {
-        console.log(surveyKeyboard.indexOf(item))
         // var {type}=result;//=> var type=result.type
 
         return {

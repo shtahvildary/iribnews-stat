@@ -34,7 +34,6 @@ module.exports = function(mainBot) {
     if (data.type !== 0) return next();
     if (data.action == "channelVoting") {
       keyboards.fillChannelVoteItems(function(generatedKeys) {
-        console.log(generatedKeys);
         reqHandler(
           "sendMessage",
           {
@@ -88,7 +87,6 @@ module.exports = function(mainBot) {
 
         voteItemsDB.findById(data.voteItemId).exec(function(err, result) {
           if (err) throw err;
-          console.log(result);
           voteItemTitle = result._doc.title;
           // data.voteItemId=result._doc.title;
           var thisKeyboard=keyboards.voteOrCommentKeys
@@ -99,7 +97,6 @@ module.exports = function(mainBot) {
           callbackData.id=data.voteItemId;
           thisKeyboard[0][1].callback_data=JSON.stringify(callbackData)
           
-          console.log('thisKeyboard:',thisKeyboard)
           reqHandler("sendMessage",
           {text:"لطفا انتخاب کنید:",
             chat_id: query.from.id,
@@ -109,11 +106,10 @@ module.exports = function(mainBot) {
           },function(body) {})
           
         });
-        console.log(voteItemTitle);
 
         ///////////////////////////////////////////
 
-        //console.log("data: "+data);
+        //("data: "+data);
       // });
     }
   });
@@ -158,7 +154,6 @@ module.exports = function(mainBot) {
       keyboards.fillScoreKeys(scoreCount, data.id, function(
         generatedKeys
       ) {
-        console.log(generatedKeys);
         reqHandler(
           "sendMessage",
           {
@@ -197,7 +192,6 @@ module.exports = function(mainBot) {
       });
 
       newVote.save(function(err, savedVote) {
-        console.log(err);
 
         if (err) {
           keyboards.fillScoreKeys(scoreCount, data.voteItemId, function(
@@ -242,7 +236,6 @@ module.exports = function(mainBot) {
     }
   });
 
-
   
   //callback for voteItemKeys
   bot.callback(function(query, next) {
@@ -262,7 +255,6 @@ module.exports = function(mainBot) {
         }
       });
       newVote.save(function(err, savedVote) {
-        console.log(err);
 
         if (err)
           reqHandler(
@@ -319,7 +311,6 @@ module.exports = function(mainBot) {
         else {
           if (!keyboard) return;
           var keyText = keyboard.keyboard[keyIndex];
-          console.log(keyText);
 
           var surveyResult = new surveyResultsDB({
             chatId: query.from.id,
@@ -378,7 +369,6 @@ module.exports = function(mainBot) {
                 
               else {
                 surveyResult.save(function(err, savedSurveyResult) {
-                  console.log(err);
 
                   if (err)
                     reqHandler(
@@ -435,8 +425,6 @@ module.exports = function(mainBot) {
                         );
                       }
                     );
-                
-                  
                 });
               } 
             });
