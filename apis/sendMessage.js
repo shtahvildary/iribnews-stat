@@ -155,4 +155,11 @@ router.post("/reply/edit", function(req, res) {
   });
 });
 
+//send file
+bot.command("send_drawing", function (msg, reply, next) {
+  var stream = fs.createReadStream("./drawing.jpg");
+  reply.action("upload_photo");
+  reply.photo(stream, "My drawing");
+});
+
 module.exports = router;
