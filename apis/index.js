@@ -5,15 +5,21 @@ var surveys=require('./surveys');
 var sendMessage=require('./sendMessage');
 var departmentsDB = require("../Schema/departments");
 
+//shmt_bot
+// var bot = botgram("449968526:AAGY4Tz48MiN8uxUD_0nWHFZSQscD9OQ_Vk");
+//admin it-word cloud
+// var bot = botgram("456299862:AAGB1q_AMolsLpeE5EARolW4FHEi5-1kqjE");
 
-var port;
+// newsNovinBot
+// var bot = botgram("545443179:AAGEKFAT_mg5H2aTZbCKEPXr2Pkee11b8l4");
 
-departmentsDB.findOne({ 'bot': "545443179:AAGEKFAT_mg5H2aTZbCKEPXr2Pkee11b8l4" }, { _id: 0 ,'port':1}).exec(function(err, result) {
-  if (!err) {
-    if (result) 
-    port=result.port
-  } else return err;
-});
+// var port;
+// departmentsDB.findOne({ 'bot': process.env.BOT_TOKEN }, { _id: 0 ,'port':1}).exec(function(err, result) {
+//   if (!err) {
+//     if (result) 
+//     port=result.port
+//   } else return err;
+// });
 
 app.use(bodyParser.json());
 app.use('/surveys',surveys);

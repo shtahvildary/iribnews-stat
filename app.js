@@ -5,15 +5,17 @@ const botgram = require("botgram");
 //admin it-word cloud
 // var bot = botgram("456299862:AAGB1q_AMolsLpeE5EARolW4FHEi5-1kqjE");
 // newsNovinBot
+//var bot = botgram("545443179:AAGEKFAT_mg5H2aTZbCKEPXr2Pkee11b8l4");
 
-var bot = botgram("545443179:AAGEKFAT_mg5H2aTZbCKEPXr2Pkee11b8l4");
+require("dotenv").config();
+
+var bot = botgram(process.env.BOT_TOKEN);
 global.bot = bot;
 
 require("./bot/commands/index")(bot);
 require("./bot/callbacks/index")(bot);
 require("./apis/index");
 
-require("dotenv").config();
 var messageDB = require("./Schema/messages");
 var chatDB = require("./Schema/chats");
 var voteItemsDB = require("./Schema/voteItems");
@@ -116,6 +118,8 @@ bot.text(function(msg, reply, next) {
 bot.video(function(msg, reply, next) {
   if (msg.caption) var AnalyseResult = textAnalyser(msg.caption);
   if (msg.reply) var replyTo = msg.reply.id;
+  download(msg.file,(err,filePath)=>{
+    if(err) return reply.text("پیام شما ثبت نشد. لطفا دوباره اقدام نمایید.")
 
   var newVideo = new messageDB({
     type: msg.type,
@@ -127,7 +131,7 @@ bot.video(function(msg, reply, next) {
     keywords: AnalyseResult,
 
     fileId: msg.file.id,
-    filePath: msg.file.path,
+    filePath: "bot"+process.env.BOT_TOKEN+"/"+msg.file.path,
     mime: msg.file.mime,
     caption: msg.caption,
     departmentId: departmentId
@@ -160,9 +164,9 @@ bot.video(function(msg, reply, next) {
           }
         });
       } else return reply.text("پیام شما ثبت نشد. لطفا دوباره سعی کنید.");
-      download(msg.file);
     }
   );
+})
 });
 
 bot.audio(function(msg, reply, next) {
@@ -170,6 +174,8 @@ bot.audio(function(msg, reply, next) {
     var AnalyseResult = textAnalyser(msg.title);
   }
   if (msg.reply) var replyTo = msg.reply.id;
+  download(msg.file,(err,filePath)=>{
+    if(err) return reply.text("پیام شما ثبت نشد. لطفا دوباره اقدام نمایید.")
 
   var newAudio = new messageDB({
     type: msg.type,
@@ -181,7 +187,7 @@ bot.audio(function(msg, reply, next) {
     keywords: AnalyseResult,
 
     fileId: msg.file.id,
-    filePath: msg.file.path,
+    filePath,
     mime: msg.file.mime,
     audioTitle: msg.title,
     departmentId: departmentId
@@ -215,16 +221,17 @@ bot.audio(function(msg, reply, next) {
           }
         });
       } else return reply.text("پیام شما ثبت نشد. لطفا دوباره سعی کنید.");
-
-      download(msg.file);
     }
   );
+})
 });
 bot.voice(function(msg, reply, next) {
   if (msg.caption) {
     var AnalyseResult = textAnalyser(msg.title);
   }
   if (msg.reply) var replyTo = msg.reply.id;
+  download(msg.file,(err,filePath)=>{
+    if(err) return reply.text("پیام شما ثبت نشد. لطفا دوباره اقدام نمایید.")
 
   var newVoice = new messageDB({
     type: msg.type,
@@ -238,7 +245,7 @@ bot.voice(function(msg, reply, next) {
     fileId: msg.file.id,
     mime: msg.file.mime,
     audioTitle: msg.file.title,
-    filePath: msg.file.path,
+    filePath,    
     departmentId: departmentId
 
     // ||(msg.path+msgFile.mime.slice(msgFile.mime.lastIndexOf("/")+1,msgFile.mime.lenght)),
@@ -274,10 +281,9 @@ bot.voice(function(msg, reply, next) {
           }
         });
       } else return reply.text("پیام شما ثبت نشد. لطفا دوباره سعی کنید.");
-
-      download(msg.file);
     }
   );
+})
 });
 //bot.contact(function (msg, reply, next) {
 //
@@ -287,111 +293,117 @@ bot.photo(function(msg, reply, next) {
     var AnalyseResult = textAnalyser(msg.caption);
   }
   if (msg.reply) var replyTo = msg.reply.id;
-  var newPhoto = new messageDB({
-    type: msg.type,
-    message_id: msg.id,
-    replyTo: replyTo,
-    chatId: msg.chat.id,
-    chatTitle: msg.chat.title,
-    chatType: msg.chat.type,
-    keywords: AnalyseResult,
+  download(msg.image.file,(err,filePath)=>{
+    if(err) return reply.text("پیام شما ثبت نشد. لطفا دوباره اقدام نمایید.")
 
-    fileId: msg.image.file.id,
-    filePath: msg.image.file.path,
-    departmentId: departmentId,
-
-    // mime: msg.file.mime,
-
-    //image:msg.image,
-    caption: msg.caption
-  });
-  chatDB.update(
-    {
-      chatId: msg.chat.id
-    },
-    {
-      $set: {
-        chatId: msg.chat.id,
-        chatTitle: msg.chat.title,
-        chatType: msg.chat.type
+    
+    var newPhoto = new messageDB({
+      type: msg.type,
+      message_id: msg.id,
+      replyTo: replyTo,
+      chatId: msg.chat.id,
+      chatTitle: msg.chat.title,
+      chatType: msg.chat.type,
+      keywords: AnalyseResult,
+  
+      fileId: msg.image.file.id,
+      filePath,
+      departmentId: departmentId,
+  
+      // mime: msg.file.mime,
+  
+      //image:msg.image,
+      caption: msg.caption
+    });
+    chatDB.update(
+      {
+        chatId: msg.chat.id
       },
-      $addToSet: { departmentId: departmentId },
-
-      $setOnInsert: {
-        trusted: 1
+      {
+        $set: {
+          chatId: msg.chat.id,
+          chatTitle: msg.chat.title,
+          chatType: msg.chat.type
+        },
+        $addToSet: { departmentId: departmentId },
+  
+        $setOnInsert: {
+          trusted: 1
+        }
+      },
+      {
+        upsert: true
+      },
+      function(error, info) {
+        if (!error) {
+          newPhoto.save(function(err, savedMessage) {
+            if (newPhoto.chatType == "user") {
+              if (err)
+                return reply.text("پیام شما ثبت نشد. لطفا دوباره سعی کنید.");
+              reply.text("پیام شما با موفقیت ثبت شد.");
+            }
+          });
+        } else return reply.text("پیام شما ثبت نشد. لطفا دوباره سعی کنید.");
+  
       }
-    },
-    {
-      upsert: true
-    },
-    function(error, info) {
-      if (!error) {
-        newPhoto.save(function(err, savedMessage) {
-          if (newPhoto.chatType == "user") {
-            if (err)
-              return reply.text("پیام شما ثبت نشد. لطفا دوباره سعی کنید.");
-            reply.text("پیام شما با موفقیت ثبت شد.");
-          }
-        });
-      } else return reply.text("پیام شما ثبت نشد. لطفا دوباره سعی کنید.");
-
-      download(msg.image.file);
-    }
-  );
+    );
+  });
 });
 bot.document(function(msg, reply, next) {
   var AnalyseResult = textAnalyser(msg.filename);
   if (msg.reply) var replyTo = msg.reply.id;
+  download(msg.file,(err,filePath)=>{
 
-  var newDocument = new messageDB({
-    type: msg.type,
-    message_id: msg.id,
-    replyTo: replyTo,
-    chatId: msg.chat.id,
-    chatTitle: msg.chat.title,
-    // voteItemId:String, //channel or program ID
-    chatType: msg.chat.type,
-    keywords: AnalyseResult,
-
-    fileId: msg.file.id,
-    filePath: msg.file.path,
-    mime: msg.file.mime,
-    fileName: msg.filename,
-    departmentId: departmentId
-  });
-  chatDB.update(
-    {
-      chatId: msg.chat.id
-    },
-    {
-      $set: {
-        chatId: msg.chat.id,
-        chatTitle: msg.chat.title,
-        chatType: msg.chat.type
+    if(err) return reply.text("پیام شما ثبت نشد. لطفا دوباره اقدام نمایید.")
+    var newDocument = new messageDB({
+      type: msg.type,
+      message_id: msg.id,
+      replyTo: replyTo,
+      chatId: msg.chat.id,
+      chatTitle: msg.chat.title,
+      // voteItemId:String, //channel or program ID
+      chatType: msg.chat.type,
+      keywords: AnalyseResult,
+  
+      fileId: msg.file.id,
+      filePath,    
+      mime: msg.file.mime,
+      fileName: msg.filename,
+      departmentId: departmentId
+    });
+    chatDB.update(
+      {
+        chatId: msg.chat.id
       },
-      $addToSet: { departmentId: departmentId },
-
-      $setOnInsert: {
-        trusted: 1
+      {
+        $set: {
+          chatId: msg.chat.id,
+          chatTitle: msg.chat.title,
+          chatType: msg.chat.type
+        },
+        $addToSet: { departmentId: departmentId },
+  
+        $setOnInsert: {
+          trusted: 1
+        }
+      },
+      {
+        upsert: true
+      },
+      function(error, info) {
+        if (!error) {
+          newDocument.save(function(err, savedMessage) {
+            if (newDocument.chatType == "user") {
+              if (err)
+                return reply.text("پیام شما ثبت نشد. لطفا دوباره سعی کنید.");
+              reply.text("پیام شما با موفقیت ثبت شد.");
+            }
+          });
+        } else return reply.text("پیام شما ثبت نشد. لطفا دوباره سعی کنید.");
       }
-    },
-    {
-      upsert: true
-    },
-    function(error, info) {
-      if (!error) {
-        newDocument.save(function(err, savedMessage) {
-          if (newDocument.chatType == "user") {
-            if (err)
-              return reply.text("پیام شما ثبت نشد. لطفا دوباره سعی کنید.");
-            reply.text("پیام شما با موفقیت ثبت شد.");
-          }
-        });
-      } else return reply.text("پیام شما ثبت نشد. لطفا دوباره سعی کنید.");
+    );
+  })
 
-      download(msg.file);
-    }
-  );
 });
 
 bot.sticker(function(msg, reply, next) {
@@ -449,6 +461,9 @@ bot.sticker(function(msg, reply, next) {
 bot.video_note(function(msg, reply, next) {
   if (msg.caption) var AnalyseResult = textAnalyser(msg.caption);
   if (msg.reply) var replyTo = msg.reply.id;
+  download(msg.file,(err,filePath)=>{
+    if(err) return reply.text("پیام شما ثبت نشد. لطفا دوباره اقدام نمایید.")
+
   var newVideoNote = new messageDB({
     type: msg.type,
     message_id: msg.id,
@@ -459,7 +474,7 @@ bot.video_note(function(msg, reply, next) {
     keywords: AnalyseResult,
 
     fileId: msg.file.id,
-    filePath: msg.file.path,
+    filePath,    
     mime: msg.file.mime,
     caption: msg.caption,
     departmentId: departmentId
@@ -492,13 +507,13 @@ bot.video_note(function(msg, reply, next) {
           }
         });
       } else return reply.text("پیام شما ثبت نشد. لطفا دوباره سعی کنید.");
-      download(msg.file);
     }
   );
+})
 });
 
 
-function download(msgFile) {
+function download(msgFile,callback) {
   var link;
 
   bot.fileGet(msgFile, function(err, info) {
@@ -506,9 +521,12 @@ function download(msgFile) {
     var path = msgFile.path;
     link = bot.fileLink(info);
     uploader(link, function(err, body, response) {
-      if (!err) {
-        var filename = body.filename;
-      }
+      if(err)
+      return callback(err)
+        var filePath = body.body.filePath;
+        console.log(body.filePath,body)
+      return callback(null,filePath);
+
     });
   });
   // bot.fileLoad(msgFile, function (err, buffer) {
