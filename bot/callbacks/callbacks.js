@@ -446,7 +446,7 @@ module.exports = function(mainBot) {
     if (data.type !== 5) return next();
     else {
       var keyIndex = data.keyIndex;
-      competitionsDB.findById(data.competitionId).exec(function(error, keyboard) {
+      competitionsDB.findById(data.compId).exec(function(error, keyboard) {
         if (error) throw error;
         else {
           if (!keyboard) return;
@@ -455,16 +455,16 @@ module.exports = function(mainBot) {
           var competitionResult = new competitionResultsDB({
             chatId: query.from.id,
 
-            competitionId: data.surveyId, //surveyId
-            text: keyText
+            competitionId: data.compId, //surveyId
+            answer: keyText
           });
           competitionResultsDB
             .find({
-              $and: [{ competitionId: data.competitionId }, { chatId: query.from.id }]
+              $and: [{ competitionId: data.compId }, { chatId: query.from.id }]
             })
             .exec(function(error, result) {
               if (error) return error;
-              if(result){
+              if(result.length!=0){
               reqHandler(
                 "sendMessage",
                 {

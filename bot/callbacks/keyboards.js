@@ -128,12 +128,12 @@ keyboards.fillCompetitionKeys = function (competition, callback) {
         // var {type}=result;//=> var type=result.type
 
         return {
-            text: item,
+            text: item.text,
             callback_data: JSON.stringify({
-                type: 3,
+                type: 5,
                // action: 'competition',
                 keyIndex:competitionKeyboard.indexOf(item),
-                competitionId:competition._id,
+                compId:competition._id,
             })
         };
     });

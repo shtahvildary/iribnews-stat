@@ -8,7 +8,9 @@ var competitionResults=mongoose.Schema({
         ref: 'competitions'
     },
     
-    answer:{text:String,correct:Boolean},
+    answer:{text:String,
+        // correct:Boolean
+    },
     date: {
         type: Date,
         default: Date.now

@@ -16,7 +16,7 @@ var req=function(method,reqBody,callback){
         },
         
       };
-      if(method=="sendDocument")options.formData=reqBody;
+      if(method=="sendDocument") options.formData=reqBody;
       else options.json= reqBody;
    
       request(options, function(err, res, body) {

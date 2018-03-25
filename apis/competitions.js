@@ -19,10 +19,11 @@ departmentsDB
   .findOne({ bot: bot.authToken }, { _id: 1 })
   .exec(function(err, result) {
     if (!err) {
-      if (result) departmentId = result.id;
+      if (result) departmentId = result;
     } else return err;
-  });
-    chatsDB.find({ $and: [ {trusted: 1  }, {departmentId} ] }, { chatId: 1, _id: 0 }).exec((err, chatIds) => {
+    
+      chatsDB.find({ $and: [ {trusted: 1  }, {departmentId} ] }, { chatId: 1, _id: 0 }).exec((err, chatIds) => {
+        // chatsDB.find({ $and: [ {'trusted': 1  }, {'departmentId':{$in:[departmentId]}} ] }, { chatId: 1, _id: 0 }).exec((err, chatIds) => {
       chatIds = chatIds.map(i => i.chatId);
       var chunks = _.chunk(chatIds, 20);
 
@@ -35,11 +36,12 @@ departmentsDB
       //function send(){}
       var send = chatIds => {
         chatIds.map(id => {
-          keyboards.fillSurveyKeys(competition, function(generatedKeys) {
+          keyboards.fillCompetitionKeys(competition, function(generatedKeys) {
+            console.log(generatedKeys)
             reqHandler(
               "sendMessage",
               {
-                text: competition.text,
+                text: competition.question,
                 chat_id: id, 
 
                 reply_markup: {
@@ -52,6 +54,10 @@ departmentsDB
         });
       };
     });
+
+  });
+
+
   });
 });
 module.exports = router;

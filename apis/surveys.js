@@ -21,7 +21,7 @@ departmentsDB
     if (!err) {
       if (result) departmentId = result;
     } else return err;
-  });
+  // });
     chatsDB.find({ $and: [ {trusted: 1  }, {departmentId} ] }, { chatId: 1, _id: 0 }).exec((err, chatIds) => {
       chatIds = chatIds.map(i => i.chatId);
       var chunks = _.chunk(chatIds, 20);
@@ -52,6 +52,9 @@ departmentsDB
         });
       };
     });
+
+  });
+    
   });
 });
 module.exports = router;
