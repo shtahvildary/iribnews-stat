@@ -11,8 +11,10 @@ var contextDB = require("../../Schema/contexts");
 var surveyResultsDB = require("../../Schema/surveyResults");
 var surveyResults = require("../../tools/surveyResults");
 var votingResults = require("../../tools/votingResults");
+var competitionResultsDB = require("../../Schema/competitionResults");
+var competitionsDB = require("../../Schema/competitions");
 
-//types:      0:mainMenueKeys   ,   1:voteItemKeys   ,   2:scoreKeys    ,   3:surveyKeys  ,   4:voteOrCommentKeys    
+//types:      0:mainMenueKeys   ,   1:voteItemKeys   ,   2:scoreKeys    ,   3:surveyKeys  ,   4:voteOrCommentKeys , 5:competitionKeys    
 
 ///////////////////////////////////////////////////////
 //TODO: these variables could be filled automaticly:
@@ -425,6 +427,84 @@ module.exports = function(mainBot) {
                         );
                       }
                     );
+                });
+              } 
+            });
+        }
+      });
+    }
+  });
+
+  //callback for competitionKeys
+  bot.callback(function(query, next) {
+    var data;
+    try {
+      data = JSON.parse(query.data);
+    } catch (e) {
+      return next();
+    }
+    if (data.type !== 5) return next();
+    else {
+      var keyIndex = data.keyIndex;
+      competitionsDB.findById(data.competitionId).exec(function(error, keyboard) {
+        if (error) throw error;
+        else {
+          if (!keyboard) return;
+          var keyText = keyboard.keyboard[keyIndex];
+
+          var competitionResult = new competitionResultsDB({
+            chatId: query.from.id,
+
+            competitionId: data.surveyId, //surveyId
+            text: keyText
+          });
+          competitionResultsDB
+            .find({
+              $and: [{ competitionId: data.competitionId }, { chatId: query.from.id }]
+            })
+            .exec(function(error, result) {
+              if (error) return error;
+              if(result){
+              reqHandler(
+                "sendMessage",
+                {
+                  text:
+                    "شما پیش از این در این مسابقه شرکت کرده اید. از همراهی شما سپاسگزاریم.",
+                  chat_id: query.from.id,
+                  reply_markup: {
+                    inline_keyboard: keyboards.competitionKeys
+                  }
+                },
+                function(body) {}
+              );
+           
+            }
+                
+              else {
+                competitionResult.save(function(err, savedCompetitionResult) {
+
+                  if (err)
+                    reqHandler(
+                      "sendMessage",
+                      {
+                        text: "پاسخ شما ثبت نشد. لطفا دوباره سعی کنید.",
+                        chat_id: query.from.id,
+                        reply_markup: {
+                          inline_keyboard: keyboards.competitionKeys
+                        }
+                      },
+                      function(body) {}
+                    );
+                  else {
+                    reqHandler(
+                      "sendMessage",
+                      {
+                        text: "پاسخ شما با موفقیت ثبت شد.",
+                        chat_id: query.from.id
+                      },
+                      function(body) {}
+                    );
+                }
                 });
               } 
             });
