@@ -19,7 +19,7 @@ departmentsDB
   .findOne({ bot: bot.authToken }, { _id: 1 })
   .exec(function(err, result) {
     if (!err) {
-      if (result) departmentId = result;
+      if (result) departmentId = result.id;
     } else return err;
   });
     chatsDB.find({ $and: [ {trusted: 1  }, {departmentId} ] }, { chatId: 1, _id: 0 }).exec((err, chatIds) => {

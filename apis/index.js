@@ -2,6 +2,7 @@ var express=require('express');
 var app=express();
 var bodyParser=require('body-parser');
 var surveys=require('./surveys');
+var competitions=require('./competitions');
 var sendMessage=require('./sendMessage');
 var departmentsDB = require("../Schema/departments");
 
@@ -24,6 +25,7 @@ var departmentsDB = require("../Schema/departments");
 app.use(bodyParser.json());
 app.use('/surveys',surveys);
 app.use('/sendMessage',sendMessage);
+app.use('/competitions',competitions);
 app.listen(9002,function(err){
     // app.listen(port,function(err){
     if(err) return ('error: ',err);
