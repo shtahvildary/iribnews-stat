@@ -1,8 +1,9 @@
 var voteItemsDB = require("../../Schema/voteItems");
 var surveysDB = require("../../Schema/surveys");
+var competitionsDB = require("../../Schema/competitions");
 
 var keyboards = {}
-//types:      0:mainMenueKeys   ,   1:voteItemKeys   ,   2:scoreKeys    , 3:surveyKeys      ,       4:voteOrCommentKeys      
+//types:      0:mainMenueKeys   ,   1:voteItemKeys   ,   2:scoreKeys    , 3:surveyKeys      ,       4:voteOrCommentKeys ,   5:competitionKeys    
 keyboards.mainMenueKeys = [
     [{
             text: "ثبت نظر درمورد کانال",
@@ -118,7 +119,25 @@ keyboards.fillSurveyKeys = function (survey, callback) {
         };
     });
     callback(surveyKeys)
+}
 
+keyboards.fillCompetitionKeys = function (competition, callback) {
+    var competitionKeys = []
+    var competitionKeyboard=competition.keyboard;
+    competitionKeys = competitionKeyboard.map(function (item) {
+        // var {type}=result;//=> var type=result.type
+
+        return {
+            text: item,
+            callback_data: JSON.stringify({
+                type: 3,
+               // action: 'competition',
+                keyIndex:competitionKeyboard.indexOf(item),
+                competitionId:competition._id,
+            })
+        };
+    });
+    callback(competitionKeys)
 }
 
 module.exports = keyboards;
