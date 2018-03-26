@@ -9,7 +9,7 @@ var _ = require("lodash");
 var async = require("async");
 
 router.post("/new", function(req, res) {
-  competitionsDB.findById(req.body.competitionId).exec(function(error, competition) {
+  competitionsDB.findById(req.body.competitionId).populate({path:'voteItemId',select:'title'}).exec(function(error, competition) {
     if (error) throw err;
     if (!competition) return res.status(400).json({ error: "competitionId is wrong." });
 
@@ -36,8 +36,12 @@ departmentsDB
       //function send(){}
       var send = chatIds => {
         chatIds.map(id => {
+          reqHandler("sendMessage",{
+            text:"همراه گرامی، برای شرکت در مسابقه "+competition.voteItemId.title+" با عنوان "+competition.title+" به پرسش زیر پاسخ دهید:",
+            chat_id:id,
+          },
+          function(body) {
           keyboards.fillCompetitionKeys(competition, function(generatedKeys) {
-            console.log(generatedKeys)
             reqHandler(
               "sendMessage",
               {
@@ -51,13 +55,12 @@ departmentsDB
               function(body) {}
             );
           });
+
+        })
         });
       };
     });
-
   });
-
-
   });
 });
 module.exports = router;
