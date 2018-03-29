@@ -471,9 +471,9 @@ module.exports = function(mainBot) {
                   text:
                     "شما پیش از این در این مسابقه شرکت کرده اید. از همراهی شما سپاسگزاریم.",
                   chat_id: query.from.id,
-                  reply_markup: {
-                    inline_keyboard: keyboards.competitionKeys
-                  }
+                  // reply_markup: {
+                  //   inline_keyboard: keyboards.competitionKeys
+                  // }
                 },
                 function(body) {}
               );
