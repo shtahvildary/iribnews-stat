@@ -23,7 +23,9 @@ var voteSchema = mongoose.Schema({
         text: {
             type: String,
             default: ""
-        }
+        },
+        departmentId:{ type:mongoose.SchemaTypes.ObjectId, ref:"departments"}, //channelId or programId
+        
     },
 })
 module.exports = mongoose.model("votes", voteSchema);

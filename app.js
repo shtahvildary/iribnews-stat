@@ -44,6 +44,7 @@ bot.text(function(msg, reply, next) {
       var comment={
         destinationId:result.destinationId,
         text:msg.text,
+        departmentId
 
       }
       var vote=new votesDB({chatId:msg.chat.id,chatTitle:msg.chat.title,comment})
