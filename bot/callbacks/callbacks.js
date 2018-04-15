@@ -13,6 +13,8 @@ var surveyResults = require("../../tools/surveyResults");
 var votingResults = require("../../tools/votingResults");
 var competitionResultsDB = require("../../Schema/competitionResults");
 var competitionsDB = require("../../Schema/competitions");
+var departmentsDB = require("../../Schema/departments");
+
 
 //types:      0:mainMenueKeys   ,   1:voteItemKeys   ,   2:scoreKeys    ,   3:surveyKeys  ,   4:voteOrCommentKeys , 5:competitionKeys    
 
@@ -21,6 +23,16 @@ var competitionsDB = require("../../Schema/competitions");
 var scoreCount = 5;
 ///////////////////////////////////////////////////////
 var voteItemTitle;
+
+var departmentId;
+
+departmentsDB
+  .findOne({ bot: global.bot.authToken }, { _id: 1 })
+  .exec(function(err, result) {
+    if (!err) {
+      if (result) departmentId = result;
+    } else return err;
+  });
 
 module.exports = function(mainBot) {
   bot = mainBot;
@@ -160,7 +172,6 @@ module.exports = function(mainBot) {
           "sendMessage",
           {
             text: "به " + voteItemTitle + " از ۱ تا ۵ چه امتیازی می دهید؟",
-            // text: "به " + data.voteItemId + " از ۱ تا ۵ چه امتیازی می دهید؟",
             chat_id: query.from.id,
 
             reply_markup: {
@@ -189,7 +200,8 @@ module.exports = function(mainBot) {
         chatId: query.from.id,
         vote: {
           destinationId: data.voteItemId, //channelId or voteItemId
-          score: data.score
+          score: data.score,
+          departmentId
         }
       });
 
@@ -253,7 +265,7 @@ module.exports = function(mainBot) {
         chatId: query.from.id,
         vote: {
           destinationId: data.voteItemId,
-          score: data.score
+          score: data.score,departmentId
         }
       });
       newVote.save(function(err, savedVote) {
