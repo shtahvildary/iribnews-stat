@@ -132,7 +132,7 @@ bot.video(function(msg, reply, next) {
     keywords: AnalyseResult,
 
     fileId: msg.file.id,
-    filePath: "bot"+process.env.BOT_TOKEN+"/"+msg.file.path,
+    filePath,
     mime: msg.file.mime,
     caption: msg.caption,
     departmentId: departmentId
@@ -521,7 +521,7 @@ function download(msgFile,callback) {
     if (err) throw err;
     var path = msgFile.path;
     link = bot.fileLink(info);
-    uploader(link, function(err, body, response) {
+    uploader(link,departmentId._id, function(err, body, response) {
       if(err)
       return callback(err)
         var filePath = body.body.filePath;
