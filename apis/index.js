@@ -14,6 +14,9 @@ var departmentsDB = require("../Schema/departments");
 // newsNovinBot
 // var bot = botgram("545443179:AAGEKFAT_mg5H2aTZbCKEPXr2Pkee11b8l4");
 
+//pr162bot
+//var bot = botgram(580739412:AAEVJ5zrs2RD0L97cthIVNSP6Mxkz0MYb3g);
+
 // var port;
 // departmentsDB.findOne({ 'bot': process.env.BOT_TOKEN }, { _id: 0 ,'port':1}).exec(function(err, result) {
 //   if (!err) {
