@@ -72,3 +72,4 @@ tmp/files/uploads/539e8179c6ed92b36d871ecd4e0ffc58
 tmp/uploads/82e39a601b9112844b5e295213e98268
 tmp/uploads/f050345d33448c710e8ee11b7819a4c8
 package-lock.json
+*.pdf

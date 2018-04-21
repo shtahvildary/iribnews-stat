@@ -25,6 +25,8 @@ var req=function(method,reqBody,callback){
           callback(body);
         }
         else{
+          console.log(res.body)
+          callback({error:err})
           // return body
         }
       });
