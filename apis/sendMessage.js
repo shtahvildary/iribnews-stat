@@ -17,7 +17,7 @@ router.post("/reply/new", function(req, res) {
 	"userId":"5a509716513a501c9cce24c6"
 }
    */
-  
+  console.log(req.body)
   messages_sc.findById(req.body._id).exec(function(err, result) {
     if (err)
       return res.status(500).json({

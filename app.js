@@ -5,7 +5,9 @@ const botgram = require("botgram");
 //admin it-word cloud
 // var bot = botgram("456299862:AAGB1q_AMolsLpeE5EARolW4FHEi5-1kqjE");
 // newsNovinBot
-//var bot = botgram("545443179:AAGEKFAT_mg5H2aTZbCKEPXr2Pkee11b8l4");
+// var bot = botgram("545443179:AAGEKFAT_mg5H2aTZbCKEPXr2Pkee11b8l4");
+//pr162bot
+//var bot = botgram(580739412:AAEVJ5zrs2RD0L97cthIVNSP6Mxkz0MYb3g);
 
 require("dotenv").config();
 
