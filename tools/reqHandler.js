@@ -11,21 +11,19 @@ var req=function(method,reqBody,callback){
     var options = {
         url:url+method,
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        // headers: {
+        //   'Content-Type': 'application/json'
+        // },
         
       };
       if(method=="sendDocument") options.formData=reqBody;
       else options.json= reqBody;
-   
       request(options, function(err, res, body) {
         if (res && (res.statusCode === 200 || res.statusCode === 201)) {
           (res,body);
           callback(body);
         }
         else{
-          console.log(res.body)
           callback({error:err})
           // return body
         }
